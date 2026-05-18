@@ -1,4 +1,5 @@
 import { BookingFlow } from '../components/BookingFlow'
+import { RepairQuote } from '../components/RepairQuote'
 import { ScrollReveal } from '../components/ScrollReveal'
 
 const tickerItems = [
@@ -156,11 +157,10 @@ export function Home() {
           </div>
 
           <h1 className="max-w-3xl text-5xl font-extrabold leading-[1.02] text-text-dark sm:text-6xl lg:text-7xl">
-            Stop buying{' '}
-            <span className="text-red-brand line-through decoration-red-brand decoration-[0.12em]">
-              scam
-            </span>{' '}
-            <span className="text-green-brand">safe</span> electronics
+            <span className="block text-red-brand">Don't get scammed.</span>
+            <span className="block text-text-dark">
+              Buy used electronics with confidence.
+            </span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-8 text-text-muted">
@@ -480,6 +480,7 @@ export function Home() {
           <BookingFlow />
         </div>
       </ScrollReveal>
+      <RepairQuote />
     </>
   )
 }

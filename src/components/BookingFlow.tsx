@@ -10,6 +10,7 @@ type ContactForm = {
   email: string
   phone: string
   imei: string
+  deviceBrand: string
 }
 
 type PaymentForm = {
@@ -24,12 +25,25 @@ type ContactTouched = {
   phone: boolean
 }
 
+type ImeiResultRow = {
+  label: string
+  value: string
+  tone: 'green' | 'red' | 'neutral'
+}
+
+type ImeiCheckResult = {
+  rows: ImeiResultRow[]
+  manufacturer?: string
+  modelName?: string
+}
+
 const emptyContactForm: ContactForm = {
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
   imei: '',
+  deviceBrand: '',
 }
 
 const emptyPaymentForm: PaymentForm = {
@@ -45,6 +59,30 @@ const emptyContactTouched: ContactTouched = {
 }
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const deviceBrandOptions = ['Apple', 'Samsung', 'Google', 'Motorola', 'Other']
+const hiddenImeiResultFields = new Set(
+  [
+    'IMEI2',
+    'MEID',
+    'Telephone Technical Support',
+    'Telephone Technical Support Expires In',
+    'Telephone Technical Support Expiration Date',
+    'AppleCare Agreement Code',
+    'AppleCare Agreement Number',
+    'AppleCare Estimated Expiration Date',
+    'AppleCare Eligible',
+    'Demo Unit',
+    'Loaner Device',
+    'Replaced Device',
+    'Replacement Device',
+    'Refurbished Device',
+    'Valid Purchase Date',
+    'Registration Status',
+    'Repairs and Service Expires In',
+    'Repairs and Service Expiration Date',
+  ].map((field) => field.toLowerCase()),
+)
+const serviceCoverageField = 'repairs and service coverage'
 
 const deviceOptions: Array<{
   name: Device
@@ -231,6 +269,144 @@ function Spinner() {
   )
 }
 
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+  options: string[]
+}) {
+  return (
+    <label className="block">
+      <span className="text-sm font-extrabold text-text-dark">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="mt-2 w-full rounded-2xl border border-border-light bg-background px-4 py-3 text-text-dark outline-none transition focus:border-green-brand focus:ring-4 focus:ring-green-brand/10"
+      >
+        <option value="">Select brand</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const stringifyValue = (value: unknown) => {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value)
+  }
+
+  if (typeof value === 'boolean') {
+    return value ? 'Yes' : 'No'
+  }
+
+  return JSON.stringify(value)
+}
+
+const getBadgeTone = (value: string): ImeiResultRow['tone'] => {
+  const normalizedValue = value.toLowerCase()
+
+  if (
+    (normalizedValue.includes('locked') &&
+      !normalizedValue.includes('unlocked')) ||
+    normalizedValue.includes('blacklisted') ||
+    normalizedValue.includes('lost') ||
+    normalizedValue.includes('stolen') ||
+    /\bon\b/.test(normalizedValue) ||
+    normalizedValue.includes('blocked')
+  ) {
+    return 'red'
+  }
+
+  if (
+    normalizedValue.includes('unlocked') ||
+    normalizedValue.includes('clean') ||
+    normalizedValue.includes('active') ||
+    /\boff\b/.test(normalizedValue) ||
+    /\bno\b/.test(normalizedValue) ||
+    /\byes\b/.test(normalizedValue) ||
+    normalizedValue.includes('registered') ||
+    normalizedValue.includes('activated')
+  ) {
+    return 'green'
+  }
+
+  return 'neutral'
+}
+
+const findField = (record: Record<string, unknown>, field: string) => {
+  const entry = Object.entries(record).find(
+    ([key]) => key.toLowerCase() === field.toLowerCase(),
+  )
+
+  return entry?.[1]
+}
+
+const getImeiResultRows = (result: Record<string, unknown>) => {
+  const rows: ImeiResultRow[] = []
+
+  for (const [label, value] of Object.entries(result)) {
+    const normalizedLabel = label.toLowerCase()
+
+    if (hiddenImeiResultFields.has(normalizedLabel)) {
+      continue
+    }
+
+    if (normalizedLabel === serviceCoverageField) {
+      const coverageValue = stringifyValue(value)
+      const expirationDate = stringifyValue(
+        findField(result, 'Repairs and Service Expiration Date') || '',
+      )
+      const isActive = coverageValue.toLowerCase() === 'active'
+      const displayValue =
+        isActive && expirationDate
+          ? `Active · Expires ${expirationDate}`
+          : isActive
+            ? 'Active'
+            : 'Expired'
+
+      rows.push({
+        label: 'Service Coverage',
+        value: displayValue,
+        tone: isActive ? 'green' : 'red',
+      })
+      continue
+    }
+
+    const stringValue = stringifyValue(value)
+
+    rows.push({
+      label,
+      value: stringValue,
+      tone: getBadgeTone(stringValue),
+    })
+  }
+
+  return rows
+}
+
+const extractImeiResult = (payload: unknown): ImeiCheckResult => {
+  const root = isRecord(payload) ? payload : {}
+  const result = isRecord(root.result) ? root.result : root
+
+  return {
+    rows: getImeiResultRows(result),
+    manufacturer: stringifyValue(findField(result, 'Manufacturer') || ''),
+    modelName: stringifyValue(findField(result, 'Model Name') || ''),
+  }
+}
+
 export function BookingFlow() {
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
@@ -243,6 +419,11 @@ export function BookingFlow() {
   const [isPreparingPayment, setIsPreparingPayment] = useState(false)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
   const [isSubmittingPayment, setIsSubmittingPayment] = useState(false)
+  const [isCheckingImei, setIsCheckingImei] = useState(false)
+  const [imeiCheckResult, setImeiCheckResult] = useState<ImeiCheckResult | null>(
+    null,
+  )
+  const [imeiCheckError, setImeiCheckError] = useState<string | null>(null)
 
   const progress = `${(currentStep / 4) * 100}%`
   const emailIsValid = emailRegex.test(contact.email.trim())
@@ -291,14 +472,59 @@ export function BookingFlow() {
     return `${digits.slice(0, 2)}/${digits.slice(2)}`
   }
 
-  const openMockPayment = () => {
+  const runImeiCheck = async () => {
+    setIsCheckingImei(true)
+    setImeiCheckError(null)
+    const manufacturer =
+      selectedDevice === 'Cellphone' ? contact.deviceBrand || 'unknown' : selectedDevice || 'unknown'
+
+    try {
+      const response = await fetch(
+        `/api/imei-check?imei=${encodeURIComponent(
+          contact.imei.trim(),
+        )}&email=${encodeURIComponent(
+          contact.email.trim(),
+        )}&manufacturer=${encodeURIComponent(manufacturer)}`,
+      )
+      const payload = (await response.json()) as {
+        status?: string
+        message?: string
+      }
+
+      if (!response.ok || payload.status === 'error') {
+        throw new Error(payload.message || 'Unable to check this IMEI.')
+      }
+
+      setImeiCheckResult(extractImeiResult(payload))
+      return true
+    } catch (error) {
+      setImeiCheckError(
+        error instanceof Error
+          ? error.message
+          : 'Unable to check this IMEI.',
+      )
+      return false
+    } finally {
+      setIsCheckingImei(false)
+    }
+  }
+
+  const openMockPayment = async () => {
     setContactTouched({
       email: true,
       phone: phoneIsRequired,
     })
 
-    if (!canConfirm || isPreparingPayment) {
+    if (!canConfirm || isPreparingPayment || isCheckingImei) {
       return
+    }
+
+    if (selectedService === 'IMEI / Serial check') {
+      const checked = await runImeiCheck()
+
+      if (!checked) {
+        return
+      }
     }
 
     setIsPreparingPayment(true)
@@ -335,6 +561,9 @@ export function BookingFlow() {
     setIsPreparingPayment(false)
     setIsPaymentModalOpen(false)
     setIsSubmittingPayment(false)
+    setIsCheckingImei(false)
+    setImeiCheckResult(null)
+    setImeiCheckError(null)
   }
 
   return (
@@ -447,6 +676,8 @@ export function BookingFlow() {
                   onClick={() => {
                     setSelectedService(service.title)
                     setSelectedPrice(service.price)
+                    setImeiCheckResult(null)
+                    setImeiCheckError(null)
                   }}
                   className={`card-lift flex min-h-full flex-col rounded-2xl border p-5 text-left transition hover:border-green-brand/60 ${
                     isSelected
@@ -555,6 +786,17 @@ export function BookingFlow() {
                   }
                 />
               </div>
+              {selectedDevice === 'Cellphone' &&
+                selectedService === 'IMEI / Serial check' && (
+                  <div className="md:col-span-2">
+                    <SelectField
+                      label="Device brand"
+                      value={contact.deviceBrand}
+                      onChange={(value) => updateContact('deviceBrand', value)}
+                      options={deviceBrandOptions}
+                    />
+                  </div>
+                )}
               {phoneIsRequired && (
                 <div className="md:col-span-2">
                   <FormField
@@ -629,11 +871,16 @@ export function BookingFlow() {
           <div className="mt-8 flex flex-col gap-3 md:flex-row">
             <button
               type="button"
-              disabled={!canConfirm || isPreparingPayment}
-              onClick={openMockPayment}
+              disabled={!canConfirm || isPreparingPayment || isCheckingImei}
+              onClick={() => void openMockPayment()}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark disabled:cursor-not-allowed disabled:bg-text-hint"
             >
-              {isPreparingPayment ? (
+              {isCheckingImei ? (
+                <>
+                  <Spinner />
+                  Checking your device...
+                </>
+              ) : isPreparingPayment ? (
                 <>
                   <Spinner />
                   Processing payment...
@@ -650,6 +897,11 @@ export function BookingFlow() {
               Back
             </button>
           </div>
+          {imeiCheckError ? (
+            <p className="mt-4 text-sm font-semibold text-red-brand">
+              {imeiCheckError}
+            </p>
+          ) : null}
         </div>
       )}
 
@@ -679,6 +931,53 @@ export function BookingFlow() {
           <p className="mx-auto mt-3 max-w-2xl text-text-muted">
             {confirmationMessage[selectedService]}
           </p>
+
+          {selectedService === 'IMEI / Serial check' && imeiCheckResult ? (
+            <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-border-light bg-white p-6 text-left shadow-sm">
+              <div className="flex flex-col justify-between gap-3 border-b border-border-light pb-5 md:flex-row md:items-center">
+                <div>
+                  <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-green-brand">
+                    IMEI result
+                  </p>
+                  <h4 className="mt-2 text-2xl font-extrabold text-text-dark">
+                    {imeiCheckResult.manufacturer || 'Device'}{' '}
+                    {imeiCheckResult.modelName || 'information'}
+                  </h4>
+                </div>
+                <span className="self-start rounded-full bg-green-light px-3 py-1 text-sm font-extrabold text-green-dark">
+                  Checked
+                </span>
+              </div>
+
+              <div className="mt-5 divide-y divide-border-light">
+                {imeiCheckResult.rows.map((row) => (
+                  <div
+                    key={row.label}
+                    className="flex flex-col justify-between gap-2 py-3 md:flex-row md:items-center"
+                  >
+                    <span className="text-sm font-extrabold text-text-muted">
+                      {row.label}
+                    </span>
+                    <span
+                      className={`rounded-full px-3 py-1 text-sm font-extrabold ${
+                        row.tone === 'red'
+                          ? 'bg-red-light text-red-brand'
+                          : row.tone === 'green'
+                            ? 'bg-green-light text-green-dark'
+                            : 'bg-surface text-text-muted'
+                      }`}
+                    >
+                      {row.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <p className="mt-5 rounded-xl bg-surface px-4 py-3 text-sm font-semibold text-text-muted">
+                Full report has been sent to your email
+              </p>
+            </div>
+          ) : null}
 
           <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-border-light bg-background p-6 text-left">
             <h4 className="text-xl font-extrabold text-text-dark">

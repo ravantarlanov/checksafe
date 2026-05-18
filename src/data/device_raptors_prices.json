@@ -1,0 +1,1160 @@
+{
+  "store": "Device Raptors",
+  "location": "Wallingford, CT",
+  "last_updated": "2026-04-30",
+  "note": "Prices derived from actual completed repairs. Nintendo Switch Lite $20 entry excluded (warranty/no-charge). Final price may vary by parts availability and condition.",
+  "markup_notes": {
+    "Mobile_screen": "avg $96 markup over parts (~2.6x)",
+    "Mobile_battery": "avg $63 markup over parts (~5x, labor heavy)",
+    "Tablet_screen": "avg $90 markup over parts (~3x)",
+    "Laptop_screen": "avg $89 markup over parts (~1.4x, parts expensive)",
+    "Console": "avg $88 markup over parts (~2.5x)",
+    "SmartWatch": "avg $93 markup over parts (~13x, labor intensive)"
+  },
+  "repairs": [
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 17 Pro Max",
+      "repair": "Screen Replacement",
+      "price": 254.19,
+      "cogs": 160.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro Max",
+      "repair": "Screen / LCD Replacement",
+      "price": 204.77,
+      "cogs": 112.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro Max",
+      "repair": "Back Glass Replacement",
+      "price": 137.4,
+      "cogs": 40.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro Max",
+      "repair": "Battery Replacement",
+      "price": 127.62,
+      "cogs": 32.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro Max",
+      "repair": "Back Camera Replacement",
+      "price": 158.46,
+      "cogs": 47.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro Max",
+      "repair": "Camera Lens Replacement",
+      "price": 55.31,
+      "cogs": 6.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro",
+      "repair": "Screen Replacement",
+      "price": 218.46,
+      "cogs": 126.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro",
+      "repair": "Back Glass Replacement",
+      "price": 106.35,
+      "cogs": 25.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Pro",
+      "repair": "Charging Port Replacement",
+      "price": 158.46,
+      "cogs": 30.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Plus",
+      "repair": "Back Glass Replacement",
+      "price": 100.0,
+      "cogs": 24.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Plus",
+      "repair": "Battery Replacement",
+      "price": 100.0,
+      "cogs": 19.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16 Plus",
+      "repair": "Front Camera Replacement",
+      "price": 60.0,
+      "cogs": 0.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16",
+      "repair": "Screen / LCD Replacement",
+      "price": 186.12,
+      "cogs": 96.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16",
+      "repair": "Battery Replacement",
+      "price": 105.82,
+      "cogs": 23.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16",
+      "repair": "Back Glass Replacement",
+      "price": 132.41,
+      "cogs": 50.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16e",
+      "repair": "Screen / LCD Replacement",
+      "price": 186.11,
+      "cogs": 46.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 16e",
+      "repair": "Battery Replacement",
+      "price": 132.94,
+      "cogs": 45.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15 Pro Max",
+      "repair": "Screen / LCD Replacement",
+      "price": 162.46,
+      "cogs": 72.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15 Pro",
+      "repair": "Screen Replacement",
+      "price": 216.96,
+      "cogs": 130.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15 Pro",
+      "repair": "Back Glass Replacement",
+      "price": 126.56,
+      "cogs": 15.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15 Pro",
+      "repair": "Charging Port Replacement",
+      "price": 105.82,
+      "cogs": 44.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15 Pro",
+      "repair": "Battery Replacement",
+      "price": 85.08,
+      "cogs": 25.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15 Pro",
+      "repair": "Speaker Replacement",
+      "price": 42.54,
+      "cogs": 4.45
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15 Plus",
+      "repair": "Screen Replacement",
+      "price": 95.72,
+      "cogs": 25.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15",
+      "repair": "Screen / LCD Replacement",
+      "price": 93.06,
+      "cogs": 44.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15",
+      "repair": "Back Glass Replacement",
+      "price": 106.35,
+      "cogs": 15.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 15",
+      "repair": "Battery Replacement",
+      "price": 118.38,
+      "cogs": 70.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro Max",
+      "repair": "Screen / LCD Replacement",
+      "price": 186.57,
+      "cogs": 74.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro Max",
+      "repair": "Battery Replacement",
+      "price": 177.08,
+      "cogs": 71.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro Max",
+      "repair": "Back Glass Replacement",
+      "price": 97.96,
+      "cogs": 35.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro Max",
+      "repair": "Charging Port Replacement",
+      "price": 84.02,
+      "cogs": 25.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro",
+      "repair": "Screen / LCD Replacement",
+      "price": 174.42,
+      "cogs": 61.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro",
+      "repair": "Battery Replacement",
+      "price": 93.95,
+      "cogs": 19.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro",
+      "repair": "Back Glass Replacement",
+      "price": 124.97,
+      "cogs": 45.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro",
+      "repair": "Charging Port Replacement",
+      "price": 105.29,
+      "cogs": 8.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Pro",
+      "repair": "Back Camera Replacement",
+      "price": 164.84,
+      "cogs": 47.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Plus",
+      "repair": "Screen / LCD Replacement",
+      "price": 137.19,
+      "cogs": 26.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Plus",
+      "repair": "Battery Replacement",
+      "price": 106.35,
+      "cogs": 15.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14 Plus",
+      "repair": "Back Glass Replacement",
+      "price": 53.18,
+      "cogs": 25.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14",
+      "repair": "Screen / LCD Replacement",
+      "price": 112.43,
+      "cogs": 23.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14",
+      "repair": "Battery Replacement",
+      "price": 70.33,
+      "cogs": 14.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14",
+      "repair": "Back Glass Replacement",
+      "price": 101.04,
+      "cogs": 50.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14",
+      "repair": "Charging Port Replacement",
+      "price": 99.97,
+      "cogs": 12.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14",
+      "repair": "Back Camera Replacement",
+      "price": 116.99,
+      "cogs": 46.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 14",
+      "repair": "Camera Lens Replacement",
+      "price": 26.59,
+      "cogs": 4.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13 Pro Max",
+      "repair": "Screen / LCD Replacement",
+      "price": 145.72,
+      "cogs": 46.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13 Pro Max",
+      "repair": "Battery Replacement",
+      "price": 105.29,
+      "cogs": 18.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13 Pro Max",
+      "repair": "Charging Port Replacement",
+      "price": 110.61,
+      "cogs": 33.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13 Pro Max",
+      "repair": "Camera Lens Replacement",
+      "price": 30.64,
+      "cogs": 1.6
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13 Pro",
+      "repair": "Screen / LCD Replacement",
+      "price": 183.28,
+      "cogs": 2.47
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13 Pro",
+      "repair": "Back Glass Replacement",
+      "price": 111.67,
+      "cogs": 15.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13 Pro",
+      "repair": "Camera Lens Replacement",
+      "price": 30.96,
+      "cogs": 2.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13",
+      "repair": "Screen / LCD Replacement",
+      "price": 106.44,
+      "cogs": 20.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 13",
+      "repair": "Battery Replacement",
+      "price": 70.55,
+      "cogs": 12.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 12 Pro Max",
+      "repair": "Screen / LCD Replacement",
+      "price": 158.46,
+      "cogs": 24.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 12 Pro Max",
+      "repair": "Battery Replacement",
+      "price": 76.16,
+      "cogs": 16.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 12 Pro Max",
+      "repair": "Back Glass Replacement",
+      "price": 106.35,
+      "cogs": 10.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 12",
+      "repair": "Screen / LCD Replacement",
+      "price": 89.0,
+      "cogs": 16.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 12",
+      "repair": "Battery Replacement",
+      "price": 62.04,
+      "cogs": 6.5
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 12",
+      "repair": "Charging Port Replacement",
+      "price": 105.29,
+      "cogs": 4.49
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11 Pro Max",
+      "repair": "Screen / LCD Replacement",
+      "price": 158.46,
+      "cogs": 15.68
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11 Pro Max",
+      "repair": "Battery Replacement",
+      "price": 80.3,
+      "cogs": 14.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11 Pro Max",
+      "repair": "Ear Speaker Replacement",
+      "price": 63.81,
+      "cogs": 6.45
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11 Pro",
+      "repair": "Screen / LCD Replacement",
+      "price": 87.92,
+      "cogs": 15.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11",
+      "repair": "Screen / LCD Replacement",
+      "price": 84.12,
+      "cogs": 16.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11",
+      "repair": "Battery Replacement",
+      "price": 53.18,
+      "cogs": 10.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11",
+      "repair": "Charging Port Replacement",
+      "price": 53.18,
+      "cogs": 4.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11",
+      "repair": "Speaker Replacement",
+      "price": 31.91,
+      "cogs": 4.74
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 11",
+      "repair": "Sim Reader Replacement",
+      "price": 30.84,
+      "cogs": 1.1
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone XS Max",
+      "repair": "Screen / LCD Replacement",
+      "price": 115.92,
+      "cogs": 16.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone XS Max",
+      "repair": "Charging Port Replacement",
+      "price": 63.81,
+      "cogs": 0.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone XR",
+      "repair": "Screen / LCD Replacement",
+      "price": 74.98,
+      "cogs": 17.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone SE (2022)",
+      "repair": "Screen / LCD Replacement",
+      "price": 79.67,
+      "cogs": 16.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone SE (2022)",
+      "repair": "Battery Replacement",
+      "price": 81.47,
+      "cogs": 8.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone SE (2022)",
+      "repair": "Back Camera Replacement",
+      "price": 60.0,
+      "cogs": 9.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 8 / SE (2020)",
+      "repair": "Screen Replacement",
+      "price": 74.45,
+      "cogs": 16.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 8 / SE (2020)",
+      "repair": "Battery Replacement",
+      "price": 53.18,
+      "cogs": 8.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 8 / SE (2020)",
+      "repair": "Back Glass Replacement",
+      "price": 85.08,
+      "cogs": 10.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 8 Plus",
+      "repair": "Battery Replacement",
+      "price": 58.49,
+      "cogs": 11.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 8 Plus",
+      "repair": "Charging Port Replacement",
+      "price": 62.75,
+      "cogs": 3.19
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Apple",
+      "device": "iPhone 6S Plus",
+      "repair": "Screen / LCD Replacement",
+      "price": 80.0,
+      "cogs": 17.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S25 Ultra",
+      "repair": "Screen / LCD Replacement",
+      "price": 371.16,
+      "cogs": 120.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S25 Ultra",
+      "repair": "Back Glass Replacement",
+      "price": 73.38,
+      "cogs": 0.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S24 Ultra",
+      "repair": "Screen Replacement",
+      "price": 349.89,
+      "cogs": 100.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S24 Plus",
+      "repair": "Screen / LCD Replacement",
+      "price": 264.81,
+      "cogs": 142.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S24 Plus",
+      "repair": "Loud Speaker Replacement",
+      "price": 111.67,
+      "cogs": 0.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S23 Ultra",
+      "repair": "Screen / LCD Replacement",
+      "price": 264.82,
+      "cogs": 149.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S23 Ultra",
+      "repair": "Charging Port Replacement",
+      "price": 84.02,
+      "cogs": 8.51
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S23 Plus",
+      "repair": "Screen / LCD Replacement",
+      "price": 243.54,
+      "cogs": 117.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S23",
+      "repair": "Battery Replacement",
+      "price": 105.29,
+      "cogs": 10.77
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S22",
+      "repair": "Battery Replacement",
+      "price": 73.74,
+      "cogs": 8.81
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S22",
+      "repair": "Charging Port Replacement",
+      "price": 53.18,
+      "cogs": 6.13
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S21 Ultra",
+      "repair": "Screen / LCD + Back Glass",
+      "price": 264.81,
+      "cogs": 83.62
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S21",
+      "repair": "Charging Port Replacement",
+      "price": 94.65,
+      "cogs": 12.88
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S20 Ultra",
+      "repair": "Screen / LCD Replacement",
+      "price": 190.37,
+      "cogs": 82.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy S20 FE",
+      "repair": "Screen / LCD Replacement",
+      "price": 166.97,
+      "cogs": 0.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy Note 20",
+      "repair": "Screen / LCD Replacement",
+      "price": 211.64,
+      "cogs": 68.6
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy Note 10 Plus",
+      "repair": "Antenna Replacement",
+      "price": 73.0,
+      "cogs": 3.16
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy A15 5G",
+      "repair": "Screen / LCD Replacement",
+      "price": 135.49,
+      "cogs": 48.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy A14 5G",
+      "repair": "Screen / LCD Replacement",
+      "price": 100.32,
+      "cogs": 16.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy A13 5G",
+      "repair": "Screen / LCD Replacement",
+      "price": 90.0,
+      "cogs": 14.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy A13 5G",
+      "repair": "Power Button Replacement",
+      "price": 40.0,
+      "cogs": 4.36
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Samsung",
+      "device": "Galaxy A10e",
+      "repair": "Screen / LCD Replacement",
+      "price": 94.0,
+      "cogs": 15.19
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Google",
+      "device": "Pixel 7a",
+      "repair": "Screen / LCD Replacement",
+      "price": 200.0,
+      "cogs": 97.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Google",
+      "device": "Pixel 7a",
+      "repair": "Battery Replacement",
+      "price": 63.81,
+      "cogs": 9.79
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Motorola",
+      "device": "Moto G 5G (2023)",
+      "repair": "Screen / LCD Replacement",
+      "price": 110.78,
+      "cogs": 18.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Motorola",
+      "device": "Moto G 5G (2024)",
+      "repair": "Screen Replacement",
+      "price": 94.33,
+      "cogs": 20.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Motorola",
+      "device": "Moto G 5G (2025)",
+      "repair": "Screen Replacement",
+      "price": 130.0,
+      "cogs": 30.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Motorola",
+      "device": "Moto G Play (2023)",
+      "repair": "Screen / LCD Replacement",
+      "price": 105.29,
+      "cogs": 16.66
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Motorola",
+      "device": "Moto G Play (2024)",
+      "repair": "Screen Replacement",
+      "price": 100.0,
+      "cogs": 25.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "OnePlus",
+      "device": "OnePlus Nord N300 5G",
+      "repair": "Screen / LCD Replacement",
+      "price": 158.46,
+      "cogs": 0.0
+    },
+    {
+      "category": "Mobile",
+      "manufacturer": "Asus",
+      "device": "Zenfone 10",
+      "repair": "Screen Replacement",
+      "price": 170.16,
+      "cogs": 60.76
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad Pro 11 (3rd/4th gen)",
+      "repair": "Screen / LCD Replacement",
+      "price": 243.54,
+      "cogs": 121.25
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad Air 5 (2022)",
+      "repair": "Screen / LCD Replacement",
+      "price": 317.99,
+      "cogs": 145.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad Air 4 (2020)",
+      "repair": "Battery Replacement",
+      "price": 147.83,
+      "cogs": 0.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 10 (2022)",
+      "repair": "Screen / LCD Replacement",
+      "price": 200.0,
+      "cogs": 107.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 9 (2021)",
+      "repair": "Screen / LCD Replacement",
+      "price": 115.0,
+      "cogs": 60.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 9 (2021)",
+      "repair": "Battery Replacement",
+      "price": 105.29,
+      "cogs": 25.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 8 (2020)",
+      "repair": "Screen / LCD Replacement",
+      "price": 106.35,
+      "cogs": 16.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 8 (2020)",
+      "repair": "Battery Replacement",
+      "price": 31.91,
+      "cogs": 19.28
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 7 (2019)",
+      "repair": "Screen / LCD Replacement",
+      "price": 121.24,
+      "cogs": 17.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 6 (2018)",
+      "repair": "Battery Replacement",
+      "price": 105.29,
+      "cogs": 20.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad 5 (2017)",
+      "repair": "Screen Replacement",
+      "price": 89.33,
+      "cogs": 13.72
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad Mini 5 (2019)",
+      "repair": "Battery Replacement",
+      "price": 94.65,
+      "cogs": 12.75
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Apple",
+      "device": "iPad Mini 1",
+      "repair": "Screen Replacement",
+      "price": 84.02,
+      "cogs": 11.0
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Samsung",
+      "device": "Galaxy Tab A8 10.5 (2021)",
+      "repair": "Charging Port Replacement",
+      "price": 122.3,
+      "cogs": 15.21
+    },
+    {
+      "category": "Tablet / iPad",
+      "manufacturer": "Samsung",
+      "device": "Galaxy Tab A9+",
+      "repair": "Charging Port Replacement",
+      "price": 84.02,
+      "cogs": 4.33
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Apple",
+      "device": "MacBook Air 13 (M1 / A2337)",
+      "repair": "Screen Replacement",
+      "price": 307.72,
+      "cogs": 219.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Apple",
+      "device": "MacBook Air 13 (M1 / A2337)",
+      "repair": "Battery Replacement",
+      "price": 190.37,
+      "cogs": 35.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Apple",
+      "device": "MacBook Air 13 (A1466)",
+      "repair": "Battery Replacement",
+      "price": 147.83,
+      "cogs": 35.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Apple",
+      "device": "MacBook Pro 13 (A1708)",
+      "repair": "Battery Replacement",
+      "price": 138.26,
+      "cogs": 42.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Microsoft",
+      "device": "Surface Pro 4",
+      "repair": "Screen + Battery Replacement",
+      "price": 106.0,
+      "cogs": 0.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Lenovo",
+      "device": "Chromebook 14E",
+      "repair": "Screen / LCD Replacement",
+      "price": 46.78,
+      "cogs": 65.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Lenovo",
+      "device": "IdeaPad Flex 5",
+      "repair": "Screen Back Cover + Hinges",
+      "price": 150.0,
+      "cogs": 0.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "HP",
+      "device": "HP 15-BS",
+      "repair": "Battery Replacement",
+      "price": 69.13,
+      "cogs": 23.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "HP",
+      "device": "HP 15-fd0153wm",
+      "repair": "Screen / LCD Replacement",
+      "price": 201.0,
+      "cogs": 55.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Dell",
+      "device": "Dell Vostro 3430",
+      "repair": "Battery Replacement",
+      "price": 148.89,
+      "cogs": 46.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Dell",
+      "device": "Any Dell Laptop",
+      "repair": "SSD + Windows Installation (128GB)",
+      "price": 147.83,
+      "cogs": 0.0
+    },
+    {
+      "category": "Laptop / Mac",
+      "manufacturer": "Asus",
+      "device": "Asus FA617",
+      "repair": "Bottom Bezel Replacement",
+      "price": 79.0,
+      "cogs": 0.0
+    },
+    {
+      "category": "Smart Watch",
+      "manufacturer": "Apple",
+      "device": "Apple Watch Series 6 40mm",
+      "repair": "Battery Replacement",
+      "price": 101.03,
+      "cogs": 7.83
+    },
+    {
+      "category": "Game Console",
+      "manufacturer": "Xbox",
+      "device": "Xbox (any)",
+      "repair": "HDMI Port Repair",
+      "price": 147.83,
+      "cogs": 60.0
+    },
+    {
+      "category": "Game Console",
+      "manufacturer": "Sony",
+      "device": "PlayStation 5",
+      "repair": "HDMI Port Replacement",
+      "price": 147.83,
+      "cogs": 60.0
+    },
+    {
+      "category": "Game Console",
+      "manufacturer": "Nintendo",
+      "device": "Nintendo Switch Lite",
+      "repair": "Screen Replacement",
+      "price": 129.99,
+      "cogs": 38.0
+    }
+  ]
+}
