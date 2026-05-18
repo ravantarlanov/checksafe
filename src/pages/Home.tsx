@@ -1,5 +1,5 @@
-import { BookingFlow } from '../components/BookingFlow'
-import { RepairQuote } from '../components/RepairQuote'
+import { Link } from 'react-router-dom'
+import { Nav } from '../components/Nav'
 import { ScrollReveal } from '../components/ScrollReveal'
 
 const tickerItems = [
@@ -127,9 +127,73 @@ const howSteps = [
   },
 ]
 
+const serviceCards = [
+  {
+    title: 'IMEI Check',
+    price: '$2.99',
+    description:
+      'Run a full check on any device IMEI or serial number. Get carrier, iCloud lock, blacklist and warranty info instantly.',
+    cta: 'Check a device',
+    href: '/check',
+    icon: (
+      <>
+        <path
+          d="M12 3.25 5.75 5.6v5.05c0 4.45 2.65 8.43 6.25 10.1 3.6-1.67 6.25-5.65 6.25-10.1V5.6L12 3.25Z"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.8"
+        />
+        <path
+          d="m9 12 2 2 4-4"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.8"
+        />
+      </>
+    ),
+  },
+  {
+    title: 'Live Chat',
+    price: '$4.99',
+    description:
+      'Text with a real expert who walks you through checking the device yourself step by step.',
+    cta: 'Start a chat',
+    href: '/chat',
+    icon: (
+      <path
+        d="M5.75 7.5A2.75 2.75 0 0 1 8.5 4.75h7A2.75 2.75 0 0 1 18.25 7.5v4.25a2.75 2.75 0 0 1-2.75 2.75H12l-4.25 4v-4A2 2 0 0 1 5.75 12.5v-5Zm4 2.5h4.5m-4.5 2.5H12"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    ),
+  },
+  {
+    title: 'Agent Call',
+    price: '$9.99',
+    description:
+      "Hop on a call with a specialist who verifies everything live and tells you if it's safe to buy.",
+    cta: 'Book a call',
+    href: '/call',
+    icon: (
+      <path
+        d="M7.75 5.25 9.5 4.5l2 4-1.5 1.25a7.5 7.5 0 0 0 4.25 4.25l1.25-1.5 4 2-.75 1.75a2.5 2.5 0 0 1-2.8 1.45c-5.04-.88-8.77-4.61-9.65-9.65a2.5 2.5 0 0 1 1.45-2.8Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+    ),
+  },
+]
+
 export function Home() {
   return (
     <>
+      <Nav />
       <section className="overflow-hidden bg-text-dark py-3 text-white">
         <div className="flex w-max animate-marquee whitespace-nowrap">
           {[...tickerItems, ...tickerItems].map((item, index) => (
@@ -170,12 +234,12 @@ export function Home() {
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="#booking"
+            <Link
+              to="/check"
               className="rounded-full bg-text-dark px-6 py-3 text-center text-sm font-extrabold text-white shadow-sm transition hover:bg-green-dark focus:outline-none focus:ring-2 focus:ring-green-brand focus:ring-offset-2 focus:ring-offset-background"
             >
               Check a device - from $2.99
-            </a>
+            </Link>
             <a
               href="#scams"
               className="rounded-full border border-border-light bg-white px-6 py-3 text-center text-sm font-extrabold text-text-dark shadow-sm transition hover:border-green-brand/40 hover:text-green-dark focus:outline-none focus:ring-2 focus:ring-green-brand focus:ring-offset-2 focus:ring-offset-background"
@@ -332,12 +396,12 @@ export function Home() {
               Don't be the next story.{' '}
               <span className="text-green-brand">$2.99 check.</span>
             </p>
-            <a
-              href="#booking"
+            <Link
+              to="/check"
               className="rounded-full bg-white px-6 py-3 text-sm font-extrabold text-text-dark transition hover:bg-green-light focus:outline-none focus:ring-2 focus:ring-green-brand focus:ring-offset-2 focus:ring-offset-text-dark"
             >
               Check a device
-            </a>
+            </Link>
           </div>
         </div>
       </ScrollReveal>
@@ -467,20 +531,55 @@ export function Home() {
         </div>
       </ScrollReveal>
 
-      <ScrollReveal id="booking" className="scroll-mt-24 px-6 py-20">
+      <ScrollReveal id="services" className="scroll-mt-24 px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 max-w-3xl">
             <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-green-brand">
-              Start here
+              Services
             </p>
             <h2 className="mt-4 text-4xl font-extrabold leading-tight text-text-dark sm:text-5xl">
-              Check a device before you buy.
+              Choose how you want to verify.
             </h2>
           </div>
-          <BookingFlow />
+          <div className="grid gap-5 lg:grid-cols-3">
+            {serviceCards.map((service) => (
+              <article
+                key={service.title}
+                className="card-lift flex min-h-full flex-col rounded-2xl border border-border-light bg-white p-6 shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <span className="grid h-12 w-12 place-items-center rounded-xl bg-green-light text-green-brand">
+                    <svg
+                      aria-hidden="true"
+                      className="h-7 w-7"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      {service.icon}
+                    </svg>
+                  </span>
+                  <span className="rounded-full bg-surface px-3 py-1 text-sm font-extrabold text-green-dark">
+                    {service.price}
+                  </span>
+                </div>
+                <h3 className="mt-6 text-2xl font-extrabold text-text-dark">
+                  {service.title}
+                </h3>
+                <p className="mt-3 grow text-base leading-7 text-text-muted">
+                  {service.description}
+                </p>
+                <Link
+                  to={service.href}
+                  className="mt-6 rounded-full bg-text-dark px-5 py-3 text-center text-sm font-extrabold text-white transition hover:bg-green-dark"
+                >
+                  {service.cta}
+                </Link>
+              </article>
+            ))}
+          </div>
         </div>
       </ScrollReveal>
-      <RepairQuote />
     </>
   )
 }

@@ -1,15 +1,17 @@
+import { Link } from 'react-router-dom'
+
 const navLinks = [
-  { href: '#scams', label: 'Scam stories' },
-  { href: '#reviews', label: 'Reviews' },
-  { href: '#how', label: 'How it works' },
+  { href: '/check', label: 'IMEI Check' },
+  { href: '/chat', label: 'Live Chat' },
+  { href: '/call', label: 'Agent Call' },
 ]
 
 export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-border-light bg-background/80 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-6">
-        <a
-          href="#top"
+        <Link
+          to="/"
           className="flex min-w-0 items-center gap-3 text-text-dark"
           aria-label="CheckSafe home"
         >
@@ -38,26 +40,26 @@ export function Nav() {
             </svg>
           </span>
           <span className="truncate text-xl font-extrabold">CheckSafe</span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
+              to={link.href}
               className="text-sm font-semibold text-text-muted transition hover:text-text-dark"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </div>
 
-        <a
-          href="#booking"
+        <Link
+          to="/check"
           className="shrink-0 rounded-full bg-text-dark px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-green-dark focus:outline-none focus:ring-2 focus:ring-green-brand focus:ring-offset-2 focus:ring-offset-background sm:px-5"
         >
           Check a device
-        </a>
+        </Link>
       </nav>
     </header>
   )

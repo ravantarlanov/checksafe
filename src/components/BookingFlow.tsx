@@ -4,6 +4,10 @@ import { useMemo, useState } from 'react'
 type Device = 'Cellphone' | 'Laptop' | 'Tablet' | 'Other'
 type Service = 'IMEI / Serial check' | 'Live chat support' | 'Live agent call'
 
+type BookingFlowProps = {
+  presetService?: Service
+}
+
 type ContactForm = {
   firstName: string
   lastName: string
@@ -191,6 +195,12 @@ const serviceOptions: Array<{
     ),
   },
 ]
+
+const servicePrices: Record<Service, number> = {
+  'IMEI / Serial check': 2.99,
+  'Live chat support': 4.99,
+  'Live agent call': 9.99,
+}
 
 const nextSteps: Record<Service, string[]> = {
   'IMEI / Serial check': [
@@ -407,11 +417,15 @@ const extractImeiResult = (payload: unknown): ImeiCheckResult => {
   }
 }
 
-export function BookingFlow() {
+export function BookingFlow({ presetService }: BookingFlowProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
-  const [selectedService, setSelectedService] = useState<Service | null>(null)
-  const [selectedPrice, setSelectedPrice] = useState<number | null>(null)
+  const [selectedService, setSelectedService] = useState<Service | null>(
+    presetService || null,
+  )
+  const [selectedPrice, setSelectedPrice] = useState<number | null>(
+    presetService ? servicePrices[presetService] : null,
+  )
   const [contact, setContact] = useState<ContactForm>(emptyContactForm)
   const [contactTouched, setContactTouched] =
     useState<ContactTouched>(emptyContactTouched)
@@ -425,7 +439,18 @@ export function BookingFlow() {
   )
   const [imeiCheckError, setImeiCheckError] = useState<string | null>(null)
 
-  const progress = `${(currentStep / 4) * 100}%`
+  const isPresetFlow = Boolean(presetService)
+  const visibleStep =
+    isPresetFlow && currentStep === 3
+      ? 2
+      : isPresetFlow && currentStep === 4
+        ? 3
+        : currentStep
+  const totalSteps = isPresetFlow ? 3 : 4
+  const progress = `${(visibleStep / totalSteps) * 100}%`
+  const progressLabel = isPresetFlow
+    ? ['Device', 'Details', 'Result'][visibleStep - 1]
+    : `Step ${currentStep} of 4`
   const emailIsValid = emailRegex.test(contact.email.trim())
   const phoneIsRequired =
     selectedService === 'Live agent call' || selectedService === 'Live chat support'
@@ -560,8 +585,8 @@ export function BookingFlow() {
   const resetFlow = () => {
     setCurrentStep(1)
     setSelectedDevice(null)
-    setSelectedService(null)
-    setSelectedPrice(null)
+    setSelectedService(presetService || null)
+    setSelectedPrice(presetService ? servicePrices[presetService] : null)
     setContact(emptyContactForm)
     setContactTouched(emptyContactTouched)
     setPaymentForm(emptyPaymentForm)
@@ -577,7 +602,11 @@ export function BookingFlow() {
     <div className="rounded-3xl border border-border-light bg-white p-5 shadow-xl shadow-text-dark/5 sm:p-8">
       <div className="mb-8">
         <div className="flex items-center justify-between text-xs font-extrabold uppercase tracking-[0.18em] text-text-hint">
-          <span>Step {currentStep} of 4</span>
+          <span>
+            {isPresetFlow
+              ? `${progressLabel} · Step ${visibleStep} of ${totalSteps}`
+              : progressLabel}
+          </span>
           {selectedPrice ? (
             <span>${selectedPrice.toFixed(2)}</span>
           ) : (
@@ -644,7 +673,9 @@ export function BookingFlow() {
           <button
             type="button"
             disabled={!selectedDevice}
-            onClick={() => selectedDevice && setCurrentStep(2)}
+            onClick={() =>
+              selectedDevice && setCurrentStep(isPresetFlow ? 3 : 2)
+            }
             className="mt-8 rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark disabled:cursor-not-allowed disabled:bg-text-hint"
           >
             Continue
@@ -652,7 +683,7 @@ export function BookingFlow() {
         </div>
       )}
 
-      {currentStep === 2 && (
+      {!isPresetFlow && currentStep === 2 && (
         <div>
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
             <div>
@@ -898,7 +929,7 @@ export function BookingFlow() {
             </button>
             <button
               type="button"
-              onClick={() => setCurrentStep(2)}
+              onClick={() => setCurrentStep(isPresetFlow ? 1 : 2)}
               className="rounded-full border border-border-light px-6 py-3 text-sm font-extrabold text-text-muted transition hover:text-text-dark"
             >
               Back
