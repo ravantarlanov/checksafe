@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 type Device = 'Cellphone' | 'Laptop' | 'Tablet' | 'Other'
 type Service = 'IMEI / Serial check' | 'Live chat support' | 'Live agent call'
@@ -418,6 +418,7 @@ const extractImeiResult = (payload: unknown): ImeiCheckResult => {
 }
 
 export function BookingFlow({ presetService }: BookingFlowProps) {
+  const formRef = useRef<HTMLDivElement>(null)
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [selectedService, setSelectedService] = useState<Service | null>(
@@ -478,6 +479,17 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
 
   const updatePayment = (field: keyof PaymentForm, value: string) => {
     setPaymentForm((current) => ({ ...current, [field]: value }))
+  }
+
+  const scrollToForm = () => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  const goToStep = (step: number) => {
+    setCurrentStep(step)
+    window.setTimeout(scrollToForm, 0)
   }
 
   const formatCardNumber = (value: string) =>
@@ -578,12 +590,12 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
     window.setTimeout(() => {
       setIsSubmittingPayment(false)
       setIsPaymentModalOpen(false)
-      setCurrentStep(4)
+      goToStep(4)
     }, 1500)
   }
 
   const resetFlow = () => {
-    setCurrentStep(1)
+    goToStep(1)
     setSelectedDevice(null)
     setSelectedService(presetService || null)
     setSelectedPrice(presetService ? servicePrices[presetService] : null)
@@ -599,7 +611,10 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
   }
 
   return (
-    <div className="rounded-3xl border border-border-light bg-white p-5 shadow-xl shadow-text-dark/5 sm:p-8">
+    <div
+      ref={formRef}
+      className="rounded-3xl border border-border-light bg-white p-5 shadow-xl shadow-text-dark/5 sm:p-8"
+    >
       <div className="mb-8">
         <div className="flex items-center justify-between text-xs font-extrabold uppercase tracking-[0.18em] text-text-hint">
           <span>
@@ -674,7 +689,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
             type="button"
             disabled={!selectedDevice}
             onClick={() =>
-              selectedDevice && setCurrentStep(isPresetFlow ? 3 : 2)
+              selectedDevice && goToStep(isPresetFlow ? 3 : 2)
             }
             className="mt-8 rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark disabled:cursor-not-allowed disabled:bg-text-hint"
           >
@@ -696,7 +711,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
             </div>
             <button
               type="button"
-              onClick={() => setCurrentStep(1)}
+              onClick={() => goToStep(1)}
               className="self-start rounded-full border border-border-light px-4 py-2 text-sm font-bold text-text-muted transition hover:text-text-dark"
             >
               Change device
@@ -771,7 +786,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
           <button
             type="button"
             disabled={!selectedService}
-            onClick={() => selectedService && setCurrentStep(3)}
+            onClick={() => selectedService && goToStep(3)}
             className="mt-8 rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark disabled:cursor-not-allowed disabled:bg-text-hint"
           >
             Continue
@@ -929,7 +944,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
             </button>
             <button
               type="button"
-              onClick={() => setCurrentStep(isPresetFlow ? 1 : 2)}
+              onClick={() => goToStep(isPresetFlow ? 1 : 2)}
               className="rounded-full border border-border-light px-6 py-3 text-sm font-extrabold text-text-muted transition hover:text-text-dark"
             >
               Back
