@@ -49,9 +49,28 @@ const hiddenResultFields = new Set(
 )
 const serviceCoverageField = 'repairs and service coverage'
 
-function selectService(manufacturer: string, category: string): string {
+function detectInputType(input: string): 'imei' | 'serial' {
+  // IMEI is 15 digits numeric only
+  if (/^\d{15}$/.test(input.trim())) return 'imei'
+  // Serial numbers are alphanumeric, usually 10-12 chars
+  return 'serial'
+}
+
+function selectService(
+  manufacturer: string,
+  category: string,
+  inputType: 'imei' | 'serial',
+): string {
   const m = (manufacturer || '').toLowerCase()
   const c = (category || '').toLowerCase()
+
+  // Serial number services
+  if (inputType === 'serial') {
+    if (m.includes('apple') || c.includes('laptop')) return '26' // APPLE SERIAL INFO $0.01
+    return '203' // BRAND & MODEL INFO fallback $0.02
+  }
+
+  // IMEI services
   if (c.includes('laptop') && m.includes('apple')) return '110'
   if (m.includes('apple') || m.includes('iphone')) return '61'
   if (m.includes('samsung')) return '80'
@@ -241,7 +260,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const email = getQueryValue(req.query.email).trim()
     const manufacturer = getQueryValue(req.query.manufacturer).trim()
     const category = getQueryValue(req.query.category).trim()
-    const serviceId = selectService(manufacturer, category)
+    const inputType = detectInputType(imei)
+    const serviceId = selectService(manufacturer, category, inputType)
+    console.log('Input type:', inputType, '| Service ID:', serviceId)
     const url = `https://sickw.com/api.php?format=beta&key=${process.env.SICKW_API_KEY}&imei=${imei}&service=${serviceId}`
     const response = await fetch(url)
     const data = (await response.json()) as SickwResponse

@@ -236,6 +236,7 @@ function FormField({
   onBlur,
   type = 'text',
   placeholder,
+  helperText,
   error,
   validationState,
 }: {
@@ -245,6 +246,7 @@ function FormField({
   onBlur?: () => void
   type?: string
   placeholder?: string
+  helperText?: string
   error?: string
   validationState?: 'valid' | 'invalid'
 }) {
@@ -268,6 +270,10 @@ function FormField({
       />
       {error ? (
         <p className="mt-2 text-sm font-semibold text-red-brand">{error}</p>
+      ) : helperText ? (
+        <p className="mt-2 text-sm font-semibold text-text-muted">
+          {helperText}
+        </p>
       ) : null}
     </label>
   )
@@ -435,6 +441,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
   const [isSubmittingPayment, setIsSubmittingPayment] = useState(false)
   const [isCheckingImei, setIsCheckingImei] = useState(false)
+  const [imeiCheckPendingEmail, setImeiCheckPendingEmail] = useState(false)
   const [imeiCheckResult, setImeiCheckResult] = useState<ImeiCheckResult | null>(
     null,
   )
@@ -563,14 +570,6 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
       return
     }
 
-    if (selectedService === 'IMEI / Serial check') {
-      const checked = await runImeiCheck()
-
-      if (!checked) {
-        return
-      }
-    }
-
     setIsPreparingPayment(true)
 
     window.setTimeout(() => {
@@ -580,16 +579,27 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
   }
 
   // TODO: Replace mock payment with Stripe Checkout
-  const submitMockPayment = () => {
+  const submitMockPayment = async () => {
     if (isSubmittingPayment) {
       return
     }
 
     setIsSubmittingPayment(true)
 
-    window.setTimeout(() => {
+    window.setTimeout(async () => {
       setIsSubmittingPayment(false)
       setIsPaymentModalOpen(false)
+
+      if (selectedService === 'IMEI / Serial check') {
+        setIsCheckingImei(true)
+        window.setTimeout(scrollToForm, 0)
+        const checked = await runImeiCheck()
+
+        if (!checked) {
+          setImeiCheckPendingEmail(true)
+        }
+      }
+
       goToStep(4)
     }, 1500)
   }
@@ -606,6 +616,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
     setIsPaymentModalOpen(false)
     setIsSubmittingPayment(false)
     setIsCheckingImei(false)
+    setImeiCheckPendingEmail(false)
     setImeiCheckResult(null)
     setImeiCheckError(null)
   }
@@ -794,7 +805,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
         </div>
       )}
 
-      {currentStep === 3 && selectedDevice && selectedService && (
+      {currentStep === 3 && selectedDevice && selectedService && !isCheckingImei && (
         <div>
           <h3 className="text-2xl font-extrabold text-text-dark">
             Contact details
@@ -880,7 +891,8 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
                     label="IMEI or serial number"
                     value={contact.imei}
                     onChange={(value) => updateContact('imei', value)}
-                    placeholder="35 123456 789012 4"
+                    placeholder="Enter IMEI (15 digits) or serial number"
+                    helperText="Find IMEI by dialing *#06# · Find serial in Settings → General → About"
                   />
                 </div>
               )}
@@ -958,7 +970,21 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
         </div>
       )}
 
-      {currentStep === 4 && selectedService && (
+      {isCheckingImei && selectedService === 'IMEI / Serial check' && (
+        <div className="text-center">
+          <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-green-light text-green-brand">
+            <Spinner />
+          </div>
+          <h3 className="mt-5 text-3xl font-extrabold text-text-dark">
+            Checking your device...
+          </h3>
+          <p className="mx-auto mt-3 max-w-xl text-text-muted">
+            Payment received. We are running the IMEI and serial check now.
+          </p>
+        </div>
+      )}
+
+      {currentStep === 4 && selectedService && !isCheckingImei && (
         <div className="text-center">
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-green-light text-green-brand">
             <svg
@@ -982,7 +1008,9 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
             You're all set!
           </h3>
           <p className="mx-auto mt-3 max-w-2xl text-text-muted">
-            {confirmationMessage[selectedService]}
+            {imeiCheckPendingEmail
+              ? 'Payment received. We are processing your check and will email your results shortly.'
+              : confirmationMessage[selectedService]}
           </p>
 
           {selectedService === 'IMEI / Serial check' && imeiCheckResult ? (
