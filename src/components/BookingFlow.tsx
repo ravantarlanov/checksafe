@@ -477,6 +477,8 @@ export function BookingFlow() {
     setImeiCheckError(null)
     const manufacturer =
       selectedDevice === 'Cellphone' ? contact.deviceBrand || 'unknown' : selectedDevice || 'unknown'
+    const friendlyError =
+      'Unable to process check. Please try again or contact support.'
 
     try {
       const response = await fetch(
@@ -484,24 +486,29 @@ export function BookingFlow() {
           contact.imei.trim(),
         )}&email=${encodeURIComponent(
           contact.email.trim(),
-        )}&manufacturer=${encodeURIComponent(manufacturer)}`,
+        )}&manufacturer=${encodeURIComponent(
+          manufacturer,
+        )}&category=${encodeURIComponent(selectedDevice || 'Other')}`,
       )
-      const payload = (await response.json()) as {
-        status?: string
-        message?: string
+      const contentType = response.headers.get('content-type') || ''
+
+      if (!contentType.includes('application/json')) {
+        throw new Error(friendlyError)
       }
 
-      if (!response.ok || payload.status === 'error') {
-        throw new Error(payload.message || 'Unable to check this IMEI.')
+      const payload = (await response.json()) as { status?: string }
+
+      if (!response.ok || payload.status !== 'success') {
+        throw new Error(friendlyError)
       }
 
       setImeiCheckResult(extractImeiResult(payload))
       return true
     } catch (error) {
       setImeiCheckError(
-        error instanceof Error
+        error instanceof Error && error.message === friendlyError
           ? error.message
-          : 'Unable to check this IMEI.',
+          : friendlyError,
       )
       return false
     } finally {

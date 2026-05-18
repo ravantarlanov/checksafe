@@ -1,9 +1,7 @@
-import { Router } from 'express'
 import { Resend } from 'resend'
 
 type SickwResponse = {
   status?: string
-  message?: string
   result?: unknown
   [key: string]: unknown
 }
@@ -14,8 +12,19 @@ type ReportRow = {
   color: string
 }
 
-const router = Router()
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+type VercelRequest = {
+  method?: string
+  query: Record<string, string | string[] | undefined>
+}
+
+type VercelResponse = {
+  setHeader: (name: string, value: string) => void
+  status: (statusCode: number) => {
+    json: (body: unknown) => void
+    end: () => void
+  }
+}
+
 const hiddenResultFields = new Set(
   [
     'IMEI2',
@@ -40,16 +49,23 @@ const hiddenResultFields = new Set(
 )
 const serviceCoverageField = 'repairs and service coverage'
 
-// Service IDs from sickw.com — costs per check:
-// Apple: $0.10, Samsung: $0.06, Motorola: $0.08
-// Google: $0.12, Other: $0.02
-function selectService(manufacturer: string): string {
-  const m = manufacturer.toLowerCase()
+function selectService(manufacturer: string, category: string): string {
+  const m = (manufacturer || '').toLowerCase()
+  const c = (category || '').toLowerCase()
+  if (c.includes('laptop') && m.includes('apple')) return '110'
   if (m.includes('apple') || m.includes('iphone')) return '61'
   if (m.includes('samsung')) return '80'
   if (m.includes('motorola')) return '13'
   if (m.includes('google') || m.includes('pixel')) return '42'
   return '203'
+}
+
+const getQueryValue = (value: string | string[] | undefined) => {
+  if (Array.isArray(value)) {
+    return value[0] || ''
+  }
+
+  return value || ''
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -211,80 +227,34 @@ const sendReportEmail = async (email: string, payload: SickwResponse) => {
   })
 }
 
-router.get('/imei-check', async (request, response) => {
-  const imei =
-    typeof request.query.imei === 'string' ? request.query.imei.trim() : ''
-  const email =
-    typeof request.query.email === 'string' ? request.query.email.trim() : ''
-  const manufacturer =
-    typeof request.query.manufacturer === 'string'
-      ? request.query.manufacturer.trim()
-      : 'unknown'
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
 
-  if (!imei) {
-    response.status(400).json({
-      status: 'error',
-      message: 'IMEI query parameter is required.',
-    })
+  if (req.method === 'OPTIONS') {
+    res.status(200).end()
     return
   }
-
-  if (!email || !emailRegex.test(email)) {
-    response.status(400).json({
-      status: 'error',
-      message: 'A valid email query parameter is required.',
-    })
-    return
-  }
-
-  if (!process.env.SICKW_API_KEY) {
-    response.status(500).json({
-      status: 'error',
-      message: 'SICKW_API_KEY is not configured.',
-    })
-    return
-  }
-
-  const serviceId = selectService(manufacturer || 'unknown')
-  const sickwUrl = new URL('https://sickw.com/api.php')
-  sickwUrl.searchParams.set('format', 'beta')
-  sickwUrl.searchParams.set('key', process.env.SICKW_API_KEY)
-  sickwUrl.searchParams.set('imei', imei)
-  sickwUrl.searchParams.set('service', serviceId)
 
   try {
-    console.log(
-      'Using SICKW service ID:',
-      serviceId,
-      'for manufacturer:',
-      manufacturer,
-    )
-    console.log('Full SICKW URL being called:', sickwUrl.toString())
+    const imei = getQueryValue(req.query.imei).trim()
+    const email = getQueryValue(req.query.email).trim()
+    const manufacturer = getQueryValue(req.query.manufacturer).trim()
+    const category = getQueryValue(req.query.category).trim()
+    const serviceId = selectService(manufacturer, category)
+    const url = `https://sickw.com/api.php?format=beta&key=${process.env.SICKW_API_KEY}&imei=${imei}&service=${serviceId}`
+    const response = await fetch(url)
+    const data = (await response.json()) as SickwResponse
 
-    const sickwResponse = await fetch(sickwUrl)
-    const payload = (await sickwResponse.json()) as SickwResponse
-    const result = getResultRecord(payload)
-
-    console.log('SICKW full response:', JSON.stringify(result, null, 2))
-
-    if (payload.status === 'error') {
-      response.status(400).json({
-        status: 'error',
-        message: payload.message || 'SICKW returned an error.',
-        ...payload,
-      })
+    if (data.status !== 'success') {
+      res.status(400).json({ error: data.result || 'Check failed' })
       return
     }
 
-    await sendReportEmail(email, payload)
+    await sendReportEmail(email, data)
 
-    response.status(sickwResponse.ok ? 200 : sickwResponse.status).json(payload)
+    res.status(200).json(data)
   } catch {
-    response.status(502).json({
-      status: 'error',
-      message: 'Unable to complete the IMEI check or send the report email.',
-    })
+    res.status(500).json({ error: 'Internal server error' })
   }
-})
-
-export default router
+}
