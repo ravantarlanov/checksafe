@@ -190,6 +190,176 @@ const serviceCards = [
   },
 ]
 
+const [imeiService, chatService, callService] = serviceCards
+
+function ExpertServiceCards() {
+  return (
+    <div className="grid gap-5 lg:grid-cols-2">
+      <article className="card-lift flex min-h-full flex-col rounded-2xl border-2 border-green-brand bg-green-light p-7 shadow-sm shadow-green-brand/10">
+        <div className="flex items-start justify-between gap-4">
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-green-brand text-white">
+            <svg
+              aria-hidden="true"
+              className="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {chatService.icon}
+            </svg>
+          </span>
+          <span className="rounded-full bg-white px-4 py-2 text-sm font-extrabold text-green-dark">
+            {chatService.price}
+          </span>
+        </div>
+
+        <h3 className="mt-8 text-3xl font-extrabold text-text-dark">
+          Talk to an expert
+        </h3>
+        <p className="mt-4 grow text-base leading-7 text-text-muted">
+          Text a real specialist who guides you through every check step by
+          step.
+        </p>
+        <Link
+          to={chatService.href}
+          className="mt-8 rounded-full bg-green-brand px-6 py-3 text-center text-sm font-extrabold text-white transition hover:bg-green-dark"
+        >
+          Start chatting
+        </Link>
+      </article>
+
+      <article className="card-lift flex min-h-full flex-col rounded-2xl border border-text-dark bg-text-dark p-7 text-white shadow-xl shadow-text-dark/15">
+        <div className="flex items-start justify-between gap-4">
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-text-dark">
+            <svg
+              aria-hidden="true"
+              className="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {callService.icon}
+            </svg>
+          </span>
+          <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-extrabold text-white">
+            {callService.price}
+          </span>
+        </div>
+
+        <h3 className="mt-8 text-3xl font-extrabold text-white">
+          Get on a call
+        </h3>
+        <p className="mt-4 grow text-base leading-7 text-white/72">
+          A specialist calls you and tells you exactly if the device is safe to
+          buy.
+        </p>
+        <Link
+          to={callService.href}
+          className="mt-8 rounded-full bg-white px-6 py-3 text-center text-sm font-extrabold text-text-dark transition hover:bg-green-light"
+        >
+          Book a call
+        </Link>
+      </article>
+    </div>
+  )
+}
+
+function ExpertLabel() {
+  return (
+    <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-green-light px-4 py-2 text-sm font-extrabold text-green-dark">
+      <svg
+        aria-hidden="true"
+        className="h-4 w-4 fill-green-brand text-green-brand"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="m12 2.75 2.6 5.27 5.82.85-4.21 4.1.99 5.8L12 16.03l-5.2 2.74.99-5.8-4.21-4.1 5.82-.85L12 2.75Z" />
+      </svg>
+      Speak with a real expert - most popular
+    </div>
+  )
+}
+
+function ServicesSection() {
+  return (
+    <ScrollReveal id="services" className="scroll-mt-24 px-6 py-20">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 max-w-3xl">
+          <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-green-brand">
+            Services
+          </p>
+          <h2 className="mt-4 text-4xl font-extrabold leading-tight text-text-dark sm:text-5xl">
+            Choose how you want to verify.
+          </h2>
+        </div>
+        <div className="flex flex-col gap-6">
+          <article className="card-lift order-2 flex flex-col gap-5 rounded-2xl border border-border-light bg-white p-5 shadow-sm md:order-1 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-4">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-surface text-green-brand">
+                <svg
+                  aria-hidden="true"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {imeiService.icon}
+                </svg>
+              </span>
+              <div>
+                <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-text-hint">
+                  Quick automated check
+                </p>
+                <h3 className="mt-2 text-xl font-extrabold text-text-dark">
+                  {imeiService.title}
+                </h3>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-text-muted">
+                  {imeiService.description}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
+              <span className="rounded-full bg-green-light px-4 py-2 text-center text-sm font-extrabold text-green-dark">
+                {imeiService.price}
+              </span>
+              <Link
+                to={imeiService.href}
+                className="rounded-full border border-border-light px-5 py-3 text-center text-sm font-extrabold text-text-dark transition hover:border-green-brand/50 hover:text-green-dark"
+              >
+                {imeiService.cta}
+              </Link>
+            </div>
+          </article>
+
+          <div className="order-1 md:order-2">
+            <ExpertLabel />
+            <ExpertServiceCards />
+          </div>
+        </div>
+      </div>
+    </ScrollReveal>
+  )
+}
+
+function BottomExpertReminder() {
+  return (
+    <ScrollReveal className="px-6 py-20">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 max-w-3xl">
+          <h2 className="text-4xl font-extrabold leading-tight text-text-dark sm:text-5xl">
+            Still not sure? Talk to a real person.
+          </h2>
+          <p className="mt-4 text-lg leading-8 text-text-muted">
+            Our experts are available to help you avoid getting scammed.
+          </p>
+        </div>
+        <ExpertServiceCards />
+      </div>
+    </ScrollReveal>
+  )
+}
+
 export function Home() {
   return (
     <>
@@ -338,6 +508,8 @@ export function Home() {
           </div>
         </div>
       </ScrollReveal>
+
+      <ServicesSection />
 
       <ScrollReveal className="border-y border-border-light bg-white">
         <div className="mx-auto grid max-w-6xl divide-y divide-border-light px-6 md:grid-cols-2 md:divide-x md:divide-y-0 lg:grid-cols-5">
@@ -531,55 +703,7 @@ export function Home() {
         </div>
       </ScrollReveal>
 
-      <ScrollReveal id="services" className="scroll-mt-24 px-6 py-20">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 max-w-3xl">
-            <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-green-brand">
-              Services
-            </p>
-            <h2 className="mt-4 text-4xl font-extrabold leading-tight text-text-dark sm:text-5xl">
-              Choose how you want to verify.
-            </h2>
-          </div>
-          <div className="grid gap-5 lg:grid-cols-3">
-            {serviceCards.map((service) => (
-              <article
-                key={service.title}
-                className="card-lift flex min-h-full flex-col rounded-2xl border border-border-light bg-white p-6 shadow-sm"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <span className="grid h-12 w-12 place-items-center rounded-xl bg-green-light text-green-brand">
-                    <svg
-                      aria-hidden="true"
-                      className="h-7 w-7"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      {service.icon}
-                    </svg>
-                  </span>
-                  <span className="rounded-full bg-surface px-3 py-1 text-sm font-extrabold text-green-dark">
-                    {service.price}
-                  </span>
-                </div>
-                <h3 className="mt-6 text-2xl font-extrabold text-text-dark">
-                  {service.title}
-                </h3>
-                <p className="mt-3 grow text-base leading-7 text-text-muted">
-                  {service.description}
-                </p>
-                <Link
-                  to={service.href}
-                  className="mt-6 rounded-full bg-text-dark px-5 py-3 text-center text-sm font-extrabold text-white transition hover:bg-green-dark"
-                >
-                  {service.cta}
-                </Link>
-              </article>
-            ))}
-          </div>
-        </div>
-      </ScrollReveal>
+      <BottomExpertReminder />
     </>
   )
 }

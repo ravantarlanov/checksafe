@@ -37,6 +37,7 @@ type ImeiResultRow = {
 
 type ImeiCheckResult = {
   rows: ImeiResultRow[]
+  deviceName?: string
   manufacturer?: string
   modelName?: string
 }
@@ -418,6 +419,7 @@ const extractImeiResult = (payload: unknown): ImeiCheckResult => {
 
   return {
     rows: getImeiResultRows(result),
+    deviceName: stringifyValue(findField(result, 'Device Name') || ''),
     manufacturer: stringifyValue(findField(result, 'Manufacturer') || ''),
     modelName: stringifyValue(findField(result, 'Model Name') || ''),
   }
@@ -425,6 +427,7 @@ const extractImeiResult = (payload: unknown): ImeiCheckResult => {
 
 export function BookingFlow({ presetService }: BookingFlowProps) {
   const formRef = useRef<HTMLDivElement>(null)
+  const deviceAdvanceTimeoutRef = useRef<number | null>(null)
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null)
   const [selectedService, setSelectedService] = useState<Service | null>(
@@ -458,6 +461,14 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
       document.body.style.overflow = ''
     }
   }, [isPaymentModalOpen])
+
+  useEffect(() => {
+    return () => {
+      if (deviceAdvanceTimeoutRef.current) {
+        window.clearTimeout(deviceAdvanceTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const isPresetFlow = Boolean(presetService)
   const visibleStep =
@@ -509,6 +520,18 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
   const goToStep = (step: number) => {
     setCurrentStep(step)
     window.setTimeout(scrollToForm, 0)
+  }
+
+  const selectDeviceAndAdvance = (device: Device) => {
+    if (deviceAdvanceTimeoutRef.current) {
+      window.clearTimeout(deviceAdvanceTimeoutRef.current)
+    }
+
+    setSelectedDevice(device)
+    deviceAdvanceTimeoutRef.current = window.setTimeout(() => {
+      goToStep(isPresetFlow ? 3 : 2)
+      deviceAdvanceTimeoutRef.current = null
+    }, 300)
   }
 
   const formatCardNumber = (value: string) =>
@@ -617,6 +640,11 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
   }
 
   const resetFlow = () => {
+    if (deviceAdvanceTimeoutRef.current) {
+      window.clearTimeout(deviceAdvanceTimeoutRef.current)
+      deviceAdvanceTimeoutRef.current = null
+    }
+
     goToStep(1)
     setSelectedDevice(null)
     setSelectedService(presetService || null)
@@ -676,7 +704,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
                 <button
                   key={device.name}
                   type="button"
-                  onClick={() => setSelectedDevice(device.name)}
+                  onClick={() => selectDeviceAndAdvance(device.name)}
                   className={`card-lift rounded-2xl border p-5 text-left transition hover:border-green-brand/60 ${
                     isSelected
                       ? 'selected-pop border-green-brand bg-green-light'
@@ -707,17 +735,6 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
               )
             })}
           </div>
-
-          <button
-            type="button"
-            disabled={!selectedDevice}
-            onClick={() =>
-              selectedDevice && goToStep(isPresetFlow ? 3 : 2)
-            }
-            className="mt-8 rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark disabled:cursor-not-allowed disabled:bg-text-hint"
-          >
-            Continue
-          </button>
         </div>
       )}
 
@@ -1033,8 +1050,10 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
                     IMEI result
                   </p>
                   <h4 className="mt-2 text-2xl font-extrabold text-text-dark">
-                    {imeiCheckResult.manufacturer || 'Device'}{' '}
-                    {imeiCheckResult.modelName || 'information'}
+                    {imeiCheckResult.deviceName ||
+                      `${imeiCheckResult.manufacturer || 'Device'} ${
+                        imeiCheckResult.modelName || 'information'
+                      }`}
                   </h4>
                 </div>
                 <span className="self-start rounded-full bg-green-light px-3 py-1 text-sm font-extrabold text-green-dark">
