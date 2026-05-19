@@ -41,6 +41,10 @@
     animation: float 4.5s ease-in-out infinite;
   }
 
+  .animate-sheet-up {
+    animation: sheet-up 220ms ease-out both;
+  }
+
   .card-lift {
     transition:
       transform 180ms ease,
@@ -121,10 +125,23 @@
     }
   }
 
+  @keyframes sheet-up {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-marquee,
     .animate-fade-up,
     .animate-float,
+    .animate-sheet-up,
     .selected-pop {
       animation: none;
     }

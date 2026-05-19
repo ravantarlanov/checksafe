@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 type Device = 'Cellphone' | 'Laptop' | 'Tablet' | 'Other'
 type Service = 'IMEI / Serial check' | 'Live chat support' | 'Live agent call'
@@ -446,6 +446,18 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
     null,
   )
   const [imeiCheckError, setImeiCheckError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!isPaymentModalOpen) {
+      return
+    }
+
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isPaymentModalOpen])
 
   const isPresetFlow = Boolean(presetService)
   const visibleStep =
@@ -1089,8 +1101,8 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
       )}
 
       {isPaymentModalOpen && selectedDevice && selectedService && selectedPrice && (
-        <div className="fixed inset-0 z-[80] grid place-items-center bg-text-dark/60 px-4 py-8 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-3xl bg-white p-5 shadow-2xl sm:p-7">
+        <div className="fixed inset-0 z-50 flex items-end justify-center overflow-hidden bg-text-dark/60 backdrop-blur-sm md:items-center md:px-4 md:py-8">
+          <div className="animate-sheet-up max-h-[90vh] w-full overflow-y-auto overscroll-contain rounded-t-[20px] bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl [-webkit-overflow-scrolling:touch] md:max-w-2xl md:rounded-3xl md:p-7">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-green-brand">
