@@ -56,6 +56,38 @@ function detectInputType(input: string): 'imei' | 'serial' {
   return 'serial'
 }
 
+function validateInput(
+  input: string,
+  manufacturer: string,
+): { valid: boolean; error?: string } {
+  const clean = input.trim()
+
+  // IMEI must be exactly 15 digits
+  if (/^\d+$/.test(clean) && clean.length !== 15) {
+    return {
+      valid: false,
+      error: 'IMEI must be exactly 15 digits. Please check and try again.',
+    }
+  }
+
+  // Apple serial must be 11 or 12 characters
+  if (!/^\d+$/.test(clean)) {
+    const m = manufacturer.toLowerCase()
+    if (
+      (m.includes('apple') || m.includes('iphone')) &&
+      (clean.length < 11 || clean.length > 12)
+    ) {
+      return {
+        valid: false,
+        error:
+          'Apple serial numbers are 11-12 characters. Find it in Settings → General → About.',
+      }
+    }
+  }
+
+  return { valid: true }
+}
+
 function selectService(
   manufacturer: string,
   category: string,
@@ -430,12 +462,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const email = getQueryValue(req.query.email).trim()
     const manufacturer = getQueryValue(req.query.manufacturer).trim()
     const category = getQueryValue(req.query.category).trim()
+    const validation = validateInput(imei, manufacturer)
+
+    if (!validation.valid) {
+      res.status(400).json({
+        error: 'invalid_input',
+        message: validation.error,
+      })
+      return
+    }
+
     const inputType = detectInputType(imei)
     const serviceId = selectService(manufacturer, category, inputType)
     console.log('Input type:', inputType, '| Service ID:', serviceId)
     const url = `https://sickw.com/api.php?format=beta&key=${process.env.SICKW_API_KEY}&imei=${imei}&service=${serviceId}`
     const response = await fetch(url)
     const data = (await response.json()) as SickwResponse
+    const resultText = stringifyValue(data.result || '')
+    const rejected =
+      data.status === 'error' ||
+      resultText.includes('Rejected:') ||
+      resultText.includes('Error') ||
+      resultText.includes('Not supported') ||
+      resultText.includes('Invalid')
+
+    if (rejected) {
+      res.status(422).json({
+        error: 'check_rejected',
+        message: data.result || 'Check was rejected by verification service',
+        refundable: true,
+      })
+      return
+    }
 
     if (data.status !== 'success') {
       res.status(400).json({ error: data.result || 'Check failed' })

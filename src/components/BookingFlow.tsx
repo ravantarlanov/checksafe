@@ -42,6 +42,11 @@ type ImeiCheckResult = {
   modelName?: string
 }
 
+type CheckFailure = {
+  type: 'rejected' | 'server'
+  message?: string
+}
+
 const emptyContactForm: ContactForm = {
   firstName: '',
   lastName: '',
@@ -207,7 +212,7 @@ const nextSteps: Record<Service, string[]> = {
   'IMEI / Serial check': [
     'Your device details are queued for an instant database scan.',
     'We send the report link to your email as soon as it is ready.',
-    'Use the result to verify, negotiate, or walk away before you pay.',
+    'Use the result to make a confident decision — buy safely or walk away.',
   ],
   'Live chat support': [
     'A secure chat link is sent to your email.',
@@ -238,6 +243,7 @@ function FormField({
   type = 'text',
   placeholder,
   helperText,
+  helperTone = 'muted',
   error,
   validationState,
 }: {
@@ -248,6 +254,7 @@ function FormField({
   type?: string
   placeholder?: string
   helperText?: string
+  helperTone?: 'muted' | 'green' | 'red'
   error?: string
   validationState?: 'valid' | 'invalid'
 }) {
@@ -272,7 +279,15 @@ function FormField({
       {error ? (
         <p className="mt-2 text-sm font-semibold text-red-brand">{error}</p>
       ) : helperText ? (
-        <p className="mt-2 text-sm font-semibold text-text-muted">
+        <p
+          className={`mt-2 text-sm font-semibold ${
+            helperTone === 'green'
+              ? 'text-green-brand'
+              : helperTone === 'red'
+                ? 'text-red-brand'
+                : 'text-text-muted'
+          }`}
+        >
           {helperText}
         </p>
       ) : null}
@@ -329,6 +344,71 @@ const stringifyValue = (value: unknown) => {
   }
 
   return JSON.stringify(value)
+}
+
+const getImeiInputValidation = (input: string, manufacturer: string) => {
+  const clean = input.trim()
+
+  if (!clean) {
+    return { valid: false }
+  }
+
+  if (/^\d+$/.test(clean) && clean.length !== 15) {
+    return {
+      valid: false,
+      error:
+        clean.length > 15
+          ? 'IMEI cannot be more than 15 digits'
+          : undefined,
+    }
+  }
+
+  if (!/^\d+$/.test(clean)) {
+    const m = manufacturer.toLowerCase()
+
+    if (
+      (m.includes('apple') || m.includes('iphone')) &&
+      (clean.length < 11 || clean.length > 12)
+    ) {
+      return {
+        valid: false,
+        error:
+          'Apple serial numbers are 11-12 characters. Find it in Settings → General → About.',
+      }
+    }
+  }
+
+  return { valid: true }
+}
+
+const getImeiInputFeedback = (
+  input: string,
+): { text: string; tone: 'muted' | 'green' | 'red' } => {
+  const clean = input.trim()
+
+  if (!clean) {
+    return {
+      text: 'Find IMEI by dialing *#06# · Find serial in Settings → General → About',
+      tone: 'muted',
+    }
+  }
+
+  if (/^\d+$/.test(clean)) {
+    if (clean.length < 15) {
+      return {
+        text: `IMEI: ${clean.length} of 15 digits entered`,
+        tone: 'muted',
+      }
+    }
+
+    if (clean.length === 15) {
+      return { text: '✓ Valid IMEI format', tone: 'green' }
+    }
+
+    return { text: 'IMEI cannot be more than 15 digits', tone: 'red' }
+  }
+
+  return { text: 'Serial number detected', tone: 'muted' }
 }
 
 const getBadgeTone = (value: string): ImeiResultRow['tone'] => {
@@ -449,6 +529,8 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
     null,
   )
   const [imeiCheckError, setImeiCheckError] = useState<string | null>(null)
+  const [imeiInputError, setImeiInputError] = useState<string | null>(null)
+  const [checkFailure, setCheckFailure] = useState<CheckFailure | null>(null)
 
   useEffect(() => {
     if (!isPaymentModalOpen) {
@@ -486,6 +568,10 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
   const phoneIsRequired =
     selectedService === 'Live agent call' || selectedService === 'Live chat support'
   const phoneIsValid = contact.phone.replace(/\D/g, '').length >= 10
+  const imeiManufacturer =
+    selectedDevice === 'Cellphone' ? contact.deviceBrand || 'unknown' : selectedDevice || 'unknown'
+  const imeiValidation = getImeiInputValidation(contact.imei, imeiManufacturer)
+  const imeiFeedback = getImeiInputFeedback(contact.imei)
   const showEmailError = contactTouched.email && !emailIsValid
   const showPhoneError = phoneIsRequired && contactTouched.phone && !phoneIsValid
 
@@ -494,13 +580,26 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
       contact.firstName.trim() && contact.lastName.trim() && emailIsValid
     const phoneReady = !phoneIsRequired || phoneIsValid
     const imeiReady =
-      selectedService !== 'IMEI / Serial check' || contact.imei.trim().length > 0
+      selectedService !== 'IMEI / Serial check' || imeiValidation.valid
 
     return Boolean(baseFields && phoneReady && imeiReady)
-  }, [contact, emailIsValid, phoneIsRequired, phoneIsValid, selectedService])
+  }, [
+    contact.firstName,
+    contact.lastName,
+    emailIsValid,
+    phoneIsRequired,
+    phoneIsValid,
+    selectedService,
+    imeiValidation.valid,
+  ])
 
   const updateContact = (field: keyof ContactForm, value: string) => {
     setContact((current) => ({ ...current, [field]: value }))
+    if (field === 'imei' || field === 'deviceBrand') {
+      setImeiInputError(null)
+      setImeiCheckError(null)
+      setCheckFailure(null)
+    }
   }
 
   const markContactTouched = (field: keyof ContactTouched) => {
@@ -554,8 +653,8 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
   const runImeiCheck = async () => {
     setIsCheckingImei(true)
     setImeiCheckError(null)
-    const manufacturer =
-      selectedDevice === 'Cellphone' ? contact.deviceBrand || 'unknown' : selectedDevice || 'unknown'
+    setCheckFailure(null)
+    const manufacturer = imeiManufacturer
     const friendlyError =
       'Unable to process check. Please try again or contact support.'
 
@@ -572,26 +671,78 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
       const contentType = response.headers.get('content-type') || ''
 
       if (!contentType.includes('application/json')) {
-        throw new Error(friendlyError)
+        setCheckFailure({ type: 'server' })
+        return 'failed' as const
       }
 
-      const payload = (await response.json()) as { status?: string }
+      const payload = (await response.json()) as {
+        status?: string
+        error?: string
+        message?: string
+      }
+
+      if (response.status === 400 || payload.error === 'invalid_input') {
+        setImeiInputError(payload.message || friendlyError)
+        goToStep(3)
+        return 'invalid' as const
+      }
+
+      if (response.status === 422 || payload.error === 'check_rejected') {
+        setCheckFailure({
+          type: 'rejected',
+          message: payload.message || 'Check was rejected by verification service',
+        })
+        return 'failed' as const
+      }
+
+      if (response.status >= 500) {
+        setCheckFailure({ type: 'server' })
+        return 'failed' as const
+      }
 
       if (!response.ok || payload.status !== 'success') {
-        throw new Error(friendlyError)
+        setCheckFailure({ type: 'server' })
+        return 'failed' as const
       }
 
       setImeiCheckResult(extractImeiResult(payload))
-      return true
-    } catch (error) {
-      setImeiCheckError(
-        error instanceof Error && error.message === friendlyError
-          ? error.message
-          : friendlyError,
-      )
-      return false
+      return 'success' as const
+    } catch {
+      setCheckFailure({ type: 'server' })
+      return 'failed' as const
     } finally {
       setIsCheckingImei(false)
+    }
+  }
+
+  const sendBookingNotification = async () => {
+    if (
+      selectedService !== 'Live chat support' &&
+      selectedService !== 'Live agent call'
+    ) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service: selectedService,
+          device: selectedDevice,
+          name: `${contact.firstName.trim()} ${contact.lastName.trim()}`.trim(),
+          email: contact.email.trim(),
+          phone: contact.phone.trim(),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Booking notification failed')
+      }
+    } catch (error) {
+      console.error('Failed to send booking notification:', error)
     }
   }
 
@@ -600,6 +751,14 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
       email: true,
       phone: phoneIsRequired,
     })
+
+    if (selectedService === 'IMEI / Serial check' && !imeiValidation.valid) {
+      setImeiInputError(
+        imeiValidation.error ||
+          'IMEI must be exactly 15 digits. Please check and try again.',
+      )
+      return
+    }
 
     if (!canConfirm || isPreparingPayment || isCheckingImei) {
       return
@@ -628,11 +787,13 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
       if (selectedService === 'IMEI / Serial check') {
         setIsCheckingImei(true)
         window.setTimeout(scrollToForm, 0)
-        const checked = await runImeiCheck()
+        const checkStatus = await runImeiCheck()
 
-        if (!checked) {
-          setImeiCheckPendingEmail(true)
+        if (checkStatus === 'invalid') {
+          return
         }
+      } else {
+        await sendBookingNotification()
       }
 
       goToStep(4)
@@ -659,6 +820,8 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
     setImeiCheckPendingEmail(false)
     setImeiCheckResult(null)
     setImeiCheckError(null)
+    setImeiInputError(null)
+    setCheckFailure(null)
   }
 
   return (
@@ -921,7 +1084,16 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
                     value={contact.imei}
                     onChange={(value) => updateContact('imei', value)}
                     placeholder="Enter IMEI (15 digits) or serial number"
-                    helperText="Find IMEI by dialing *#06# · Find serial in Settings → General → About"
+                    helperText={imeiFeedback.text}
+                    helperTone={imeiFeedback.tone}
+                    error={imeiInputError || imeiValidation.error}
+                    validationState={
+                      imeiInputError || imeiValidation.error
+                        ? 'invalid'
+                        : contact.imei.trim() && imeiValidation.valid
+                          ? 'valid'
+                          : undefined
+                    }
                   />
                 </div>
               )}
@@ -1015,34 +1187,92 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
 
       {currentStep === 4 && selectedService && !isCheckingImei && (
         <div className="text-center">
-          <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-green-light text-green-brand">
-            <svg
-              aria-hidden="true"
-              className="h-9 w-9"
-              fill="none"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="m6.75 12.25 3.25 3.25 7.25-7.5"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.2"
-              />
-            </svg>
-          </div>
+          {checkFailure ? (
+            <>
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-amber-100 text-amber-600">
+                <svg
+                  aria-hidden="true"
+                  className="h-9 w-9"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 8v5m0 4h.01M10.3 4.8 3.1 17.25A2 2 0 0 0 4.83 20h14.34a2 2 0 0 0 1.73-2.75L13.7 4.8a2 2 0 0 0-3.4 0Z"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
 
-          <h3 className="mt-5 text-3xl font-extrabold text-text-dark">
-            You're all set!
-          </h3>
-          <p className="mx-auto mt-3 max-w-2xl text-text-muted">
-            {imeiCheckPendingEmail
-              ? 'Payment received. We are processing your check and will email your results shortly.'
-              : confirmationMessage[selectedService]}
-          </p>
+              <h3 className="mt-5 text-3xl font-extrabold text-text-dark">
+                {checkFailure.type === 'rejected'
+                  ? 'Check could not be completed'
+                  : 'Something went wrong'}
+              </h3>
+              <p className="mx-auto mt-3 max-w-2xl text-text-muted">
+                {checkFailure.type === 'rejected'
+                  ? 'Your payment has not been charged. The check was rejected — this can happen with invalid or unsupported serial formats. Please verify the number and try again, or contact us at support@deviceraptors.org'
+                  : 'Your payment has not been charged. Please try again or contact us at support@deviceraptors.org'}
+              </p>
+              {checkFailure.type === 'rejected' && checkFailure.message ? (
+                <p className="mx-auto mt-4 max-w-2xl rounded-xl bg-surface px-4 py-3 text-sm font-semibold text-text-muted">
+                  Reason: {checkFailure.message}
+                </p>
+              ) : null}
 
-          {selectedService === 'IMEI / Serial check' && imeiCheckResult ? (
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={resetFlow}
+                  className="rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark"
+                >
+                  Try again
+                </button>
+                <a
+                  href="mailto:support@deviceraptors.org"
+                  className="rounded-full border border-border-light px-6 py-3 text-sm font-extrabold text-text-muted transition hover:text-text-dark"
+                >
+                  Contact support
+                </a>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-green-light text-green-brand">
+                <svg
+                  aria-hidden="true"
+                  className="h-9 w-9"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m6.75 12.25 3.25 3.25 7.25-7.5"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.2"
+                  />
+                </svg>
+              </div>
+
+              <h3 className="mt-5 text-3xl font-extrabold text-text-dark">
+                You're all set!
+              </h3>
+              <p className="mx-auto mt-3 max-w-2xl text-text-muted">
+                {imeiCheckPendingEmail
+                  ? 'Payment received. We are processing your check and will email your results shortly.'
+                  : confirmationMessage[selectedService]}
+              </p>
+            </>
+          )}
+
+          {!checkFailure &&
+          selectedService === 'IMEI / Serial check' &&
+          imeiCheckResult ? (
             <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-border-light bg-white p-6 text-left shadow-sm">
               <div className="flex flex-col justify-between gap-3 border-b border-border-light pb-5 md:flex-row md:items-center">
                 <div>
@@ -1091,6 +1321,7 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
             </div>
           ) : null}
 
+          {!checkFailure ? (
           <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-border-light bg-background p-6 text-left">
             <h4 className="text-xl font-extrabold text-text-dark">
               What happens next
@@ -1108,14 +1339,17 @@ export function BookingFlow({ presetService }: BookingFlowProps) {
               ))}
             </div>
           </div>
+          ) : null}
 
-          <button
-            type="button"
-            onClick={resetFlow}
-            className="mt-8 rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark"
-          >
-            Check another device
-          </button>
+          {!checkFailure ? (
+            <button
+              type="button"
+              onClick={resetFlow}
+              className="mt-8 rounded-full bg-text-dark px-6 py-3 text-sm font-extrabold text-white transition hover:bg-green-dark"
+            >
+              Check another device
+            </button>
+          ) : null}
         </div>
       )}
 
